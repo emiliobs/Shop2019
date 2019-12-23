@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Shop.Web.Data;
 using Shop.Web.Data.Entities;
 
 namespace Shop.Web
@@ -31,6 +32,8 @@ namespace Shop.Web
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddTransient<SeedDB>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
