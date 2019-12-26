@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shop.Web.Data.Entities;
+using Shop.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,12 @@ namespace Shop.Web.Data
     public class SeedDB
     {
         private readonly AppDataContext _context;
-        private readonly UserManager<User> _userManager;
+        private readonly IUserHelper _userHelper;
         private Random random;
-        public SeedDB(AppDataContext context, UserManager<User> userManager)
+        public SeedDB(AppDataContext context, IUserHelper userHelper)
         {
             _context = context;
-            _userManager = userManager;
+            _userHelper = userHelper;
             this.random = new Random();
         }
 
@@ -23,7 +24,7 @@ namespace Shop.Web.Data
         {
              await _context.Database.EnsureCreatedAsync();
 
-            var user = await _userManager.FindByEmailAsync("barrera_emilio@hotmail.com");
+            var user = await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
             if (user == null)
             {
                 user = new User
@@ -36,7 +37,7 @@ namespace Shop.Web.Data
                 };
             }
 
-            var result = await _userManager.CreateAsync(user,"Eabs123.");
+            var result = await _userHelper.AddUserAsync(user,"Eabs123.");
             if (result != IdentityResult.Success)
             {
 

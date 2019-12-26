@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.Web.Data;
 using Shop.Web.Data.Entities;
+using Shop.Web.Helpers;
 using System;
 using System.Threading.Tasks;
 
@@ -10,10 +11,12 @@ namespace Shop.Web.Controllers
     public class ProductsController : Controller
     {
         private readonly IProductRepository _productRepository;
+        private readonly IUserHelper _userHelper;
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, IUserHelper userHelper)
         {
             _productRepository = productRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Products
@@ -56,6 +59,8 @@ namespace Shop.Web.Controllers
             {
                 try
                 {
+                    //TODO: Change for the logged User
+                    product.User = await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
                     _productRepository.AddProduct(product);
                     await _productRepository.SaveAllAsync();
                 }
@@ -102,6 +107,8 @@ namespace Shop.Web.Controllers
             {
                 try
                 {
+                    //TODO: Change for the logged User
+                    product.User =  await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
                     _productRepository.UpdateProduct(product);
                     await _productRepository.SaveAllAsync();
                 }
