@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Shop.Web.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Web.Data.Entities
 {
-    public class AppDataContext:DbContext
+    public class AppDataContext:IdentityDbContext<User>
     {
         public AppDataContext(DbContextOptions options):base(options)
         {

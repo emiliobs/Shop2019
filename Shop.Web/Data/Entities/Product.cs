@@ -32,5 +32,8 @@ namespace Shop.Web.Data.Entities
 		[DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
 		public double Stock { get; set; }
 
+		//relations
+		public User User { get; set; }
+
 	}
 }

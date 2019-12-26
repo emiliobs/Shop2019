@@ -1,4 +1,5 @@
-﻿using Shop.Web.Data.Entities;
+﻿using Microsoft.AspNetCore.Identity;
+using Shop.Web.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,12 @@ namespace Shop.Web.Data
     public class SeedDB
     {
         private readonly AppDataContext _context;
+        private readonly UserManager<User> _userManager;
         private Random random;
-        public SeedDB(AppDataContext context)
+        public SeedDB(AppDataContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
             this.random = new Random();
         }
 
@@ -20,19 +23,39 @@ namespace Shop.Web.Data
         {
              await _context.Database.EnsureCreatedAsync();
 
+            var user = await _userManager.FindByEmailAsync("barrera_emilio@hotmail.com");
+            if (user == null)
+            {
+                user = new User
+                {
+                    FirstName = "Emilio",
+                    LastName = "Barrera",
+                    Email = "barrera_emilio@hotmail.com",
+                    UserName = "barrera_emilio@hotmail.com",
+                    PhoneNumber = "+447907951284",
+                };
+            }
+
+            var result = await _userManager.CreateAsync(user,"Eabs123.");
+            if (result != IdentityResult.Success)
+            {
+
+                throw new InvalidOperationException("Could not create the user in Seeder.");
+            }
+
             if (!_context.Products.Any())
             {
-                AddProduct("iPhone x");
-                AddProduct("Magic Mause");
-                AddProduct("iWatch Series 4");
-                AddProduct("Laptop Toshiba");
-                AddProduct("Sunglasses oracle");
+                AddProduct("iPhone x",user);
+                AddProduct("Magic Mause",user);
+                AddProduct("iWatch Series 4",user );
+                AddProduct("Laptop Toshiba", user);
+                AddProduct("Sunglasses oracle", user);
 
                 await _context.SaveChangesAsync();
             }
         }
 
-        private void AddProduct(string product)
+        private void AddProduct(string product, User user)
         {
             _context.Products.Add(new Product 
             {
@@ -40,6 +63,7 @@ namespace Shop.Web.Data
                 Price = random.Next(1000),
                 IsAvailabe = true,
                 Stock  = random.Next(100),
+                User = user,
             });
         }
     }
