@@ -22,18 +22,18 @@ namespace Shop.Web.Controllers
         // GET: Products
         public IActionResult Index()
         {
-            return View(_productRepository.GetProducts());
+            return View(_productRepository.GetAll());
         }
 
         // GET: Products/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var product = _productRepository.GetProductById(id.Value);
+            var product = await _productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -61,8 +61,8 @@ namespace Shop.Web.Controllers
                 {
                     //TODO: Change for the logged User
                     product.User = await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
-                    _productRepository.AddProduct(product);
-                    await _productRepository.SaveAllAsync();
+                    await _productRepository.CreateAsync(product);
+                  
                 }
                 catch (Exception ex)
                 {
@@ -76,14 +76,14 @@ namespace Shop.Web.Controllers
         }
 
         // GET: Products/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var product = _productRepository.GetProductById(id.Value);
+            var product = await _productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -96,7 +96,7 @@ namespace Shop.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Product product)
+        public async Task<IActionResult> Edit(int id,Product product)
         {
             if (id != product.Id)
             {
@@ -108,13 +108,13 @@ namespace Shop.Web.Controllers
                 try
                 {
                     //TODO: Change for the logged User
-                    product.User =  await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
-                    _productRepository.UpdateProduct(product);
-                    await _productRepository.SaveAllAsync();
+                    product.User = await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
+                    await _productRepository.UpdateAsync(product);
+                    //await _productRepository.SaveAllAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_productRepository.ProductExistById(product.Id))
+                    if (!await _productRepository.ExistAsync(product.Id))
                     {
                         return NotFound();
                     }
@@ -123,20 +123,21 @@ namespace Shop.Web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
+               return RedirectToAction(nameof(Index));
             }
             return View(product);
         }
 
         // GET: Products/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> DeleteAsync(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var product = _productRepository.GetProductById(id.Value);
+            var product = await _productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
                 return NotFound();
@@ -148,14 +149,15 @@ namespace Shop.Web.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public  async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = _productRepository.GetProductById(id);
 
             try
             {
-                _productRepository.RemoveProduct(product);
-                await _productRepository.SaveAllAsync();
+                 var product = await _productRepository.GetByIdAsync(id);
+                await _productRepository.DeleteAsync(product);
+
+                //await _productRepository.SaveAllAsync();
             }
             catch (Exception ex)
             {

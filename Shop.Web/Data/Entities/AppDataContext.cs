@@ -15,5 +15,6 @@ namespace Shop.Web.Data.Entities
 
         }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Country> Countries { get; set; }
     }
 }

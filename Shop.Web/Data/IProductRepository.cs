@@ -4,20 +4,21 @@ using System.Threading.Tasks;
 
 namespace Shop.Web.Data
 {
-    public interface IProductRepository
+    public interface IProductRepository : IGenericRepository<Product>
     {
-        void AddProduct(Product product);
+        //void AddProduct(Product product);
 
-        Product GetProductById(int id);
-        
-        IEnumerable<Product> GetProducts();
-        
-        bool ProductExistById(int id);
-        
-        void RemoveProduct(Product product);
-        
-        Task<bool> SaveAllAsync();
-        
-        void UpdateProduct(Product product);
+        //Product GetProductById(int id);
+
+        //IEnumerable<Product> GetProducts();
+
+        //bool ProductExistById(int id);
+
+        //void RemoveProduct(Product product);
+
+        //Task<bool> SaveAllAsync();
+
+        //void UpdateProduct(Product product);
+
     }
 }
