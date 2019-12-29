@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Shop.UIForms.Views.LoginPage"
+             BindingContext="{Binding Main, Source={StaticResource Key=Locator}}"
+             Title="Login!">
+    <ContentPage.Content>
+        <ScrollView BindingContext="{Binding Login}">
+            <StackLayout Padding="8" Spacing="10">
+                <Label Text="Email"></Label>
+                <Entry 
+                    Text="{Binding Email}" 
+                    Placeholder="Enter Your Email....."
+                    Keyboard="Email"
+                    >                    
+                </Entry>
+                <Label Text="Password"></Label>
+                <Entry Text="{Binding Passwrod}"
+                       IsPassword ="True"
+                       Placeholder="enter your Password.....">
+                </Entry>
+                <Button 
+                    Text="Login!" 
+                    Command="{Binding LoginCommand}"
+                    CornerRadius="40"
+                    BackgroundColor="#2196F3">                    
+                </Button>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
