@@ -18,7 +18,7 @@
                     >                    
                 </Entry>
                 <Label Text="Password"></Label>
-                <Entry Text="{Binding Passwrod}"
+                <Entry Text="{Binding Password}"
                        IsPassword ="True"
                        Placeholder="enter your Password.....">
                 </Entry>
