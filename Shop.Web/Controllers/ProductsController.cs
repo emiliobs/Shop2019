@@ -124,7 +124,25 @@ namespace Shop.Web.Controllers
             {
                 return NotFound();
             }
-            return View(product);
+            var view = ToProductViewModel(product);
+
+            return View(view);
+        }
+
+        private ProductViewModel ToProductViewModel(Product product)
+        {
+            return new ProductViewModel 
+            {
+                Id = product.Id,
+                IsAvailabe = product.IsAvailabe,
+                LastPurchase = product.LastPurchase,
+                LastSale = product.LastSale,
+                Name = product.Name,
+                Price = product.Price,
+                Stock = product.Stock,
+                User = product.User,
+                ImageUrl = product.ImageUrl,
+            }; 
         }
 
         // POST: Products/Edit/5
@@ -132,9 +150,9 @@ namespace Shop.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,Product product)
+        public async Task<IActionResult> Edit(int id,ProductViewModel view)
         {
-            if (id != product.Id)
+            if (id != view.Id)
             {
                 return NotFound();
             }
@@ -143,6 +161,23 @@ namespace Shop.Web.Controllers
             {
                 try
                 {
+                    var path = view.ImageUrl;
+
+                    if (view.ImageFile != null && view.ImageFile.Length > 0)
+                    {
+                        path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\images\\Products", view.ImageFile.FileName);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await view.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/Products/{view.ImageFile.FileName}";
+                    }
+
+
+                    var product = ToProduct(view, path);
+
                     //TODO: Change for the logged User
                     product.User = await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
                     await _productRepository.UpdateAsync(product);
@@ -150,7 +185,7 @@ namespace Shop.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _productRepository.ExistAsync(product.Id))
+                    if (!await _productRepository.ExistAsync(view.Id))
                     {
                         return NotFound();
                     }
@@ -162,7 +197,7 @@ namespace Shop.Web.Controllers
 
                return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(view);
         }
 
         // GET: Products/Delete/5
