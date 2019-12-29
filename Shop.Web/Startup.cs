@@ -45,9 +45,9 @@ namespace Shop.Web
                 cfg.Password.RequireUppercase = false;
                 cfg.Password.RequiredLength = 6;
             }).AddEntityFrameworkStores<AppDataContext>();
-            
-            
-            services.AddScoped<SeedDB>();
+
+
+            services.AddTransient<SeedDB>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<IUserHelper, UserHelper>();
@@ -57,10 +57,11 @@ namespace Shop.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsProduction())
             {
                 app.UseDeveloperExceptionPage();
             }
+            
             else
             {
                 app.UseExceptionHandler("/Home/Error");
