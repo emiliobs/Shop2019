@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table">
+<table class="table table-responsive">
     <thead>
         <tr>
             <th>
@@ -34,6 +34,8 @@
                 @Html.DisplayNameFor(model => model.Stock)
             </th>
             <th></th>
+            <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -45,8 +47,14 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
+            @*<td>
+            @Html.DisplayFor(modelItem => item.ImageUrl)
+        </td>*@
             <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                <img src="@Url.Content(item.ImageUrl)" alt="Image" style="width:100px; height:150px; max-width:100%; height:auto;" />
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LastPurchase)
@@ -61,9 +69,14 @@
                 @Html.DisplayFor(modelItem => item.Stock)
             </td>
             <td>
-                <a asp-action="Edit" class="btn btn-warning" asp-route-id="@item.Id">Edit</a> 
-                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id">Details</a> 
-                <a asp-action="Delete" class="btn btn-danger"asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" class="btn btn-warning" asp-route-id="@item.Id">Edit</a>
+            </td>
+            <td>
+                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id">Details</a>
+            </td>
+            <td>
+                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
+
             </td>
         </tr>
 }
