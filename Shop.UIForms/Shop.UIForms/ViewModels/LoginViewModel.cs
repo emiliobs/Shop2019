@@ -9,6 +9,12 @@ namespace Shop.UIForms.ViewModels
         public string Password { get; set; }
         public ICommand LoginCommand => new RelayCommand(Login);
 
+        public LoginViewModel()
+        {
+            Email = "emilio@gmail.com";
+            Password = "Eabs123.";
+        }
+
         private async void Login()
         {
             if (string.IsNullOrEmpty(Email))
@@ -25,7 +31,15 @@ namespace Shop.UIForms.ViewModels
                 return;
             }
 
+            if (!Email.Equals("emilio@gmail.com") || !Password.Equals("Eabs123."))
+            {
+                await App.Current.MainPage.DisplayAlert("Ok", "User or Password wrong....", "Accept");
+                return;
+
+            }
+
             await App.Current.MainPage.DisplayAlert("Ok", "Fuck yeah!!!!", "Accept");
+
 
 
         }
