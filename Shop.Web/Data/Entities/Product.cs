@@ -35,5 +35,19 @@ namespace Shop.Web.Data.Entities
 		//relations
 		public User User { get; set; }
 
+		public string ImageFullPath 
+		{
+			get 
+			{
+				if (string.IsNullOrEmpty(this.ImageUrl))
+				{
+					return null;
+				}
+				//http://10.0.75.1:555/images/Products/iPhonex.jpg
+				return $"http://10.0.75.1:555{ImageUrl.Substring(1)}";
+			}
+
+	    }
+
 	}
 }
