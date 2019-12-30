@@ -9,21 +9,26 @@
              Title="Products">
     <ContentPage.Content>
         <StackLayout BindingContext="{Binding Products}">
-            <ListView ItemsSource="{Binding Products}" HasUnevenRows="True" SeparatorVisibility="None">
+            <ListView ItemsSource="{Binding Products}" 
+                      HasUnevenRows="True" 
+                      SeparatorVisibility="None" 
+                      IsRefreshing="{Binding IsRefreshing}"
+                      IsPullToRefreshEnabled="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <ViewCell.View>
-                                <Frame CornerRadius="10" Margin="10" HasShadow="True" BorderColor="DarkBlue">
+                                <Frame  CornerRadius="10" Margin="10" HasShadow="True" BorderColor="DarkBlue">
                                     <StackLayout>
                                         <Image 
                                             Source="{Binding ImageFullPath}" 
-                                            WidthRequest="300" 
-                                            HeightRequest="200"
+                                            WidthRequest="150" 
+                                            HeightRequest="100"
                                             Aspect="AspectFit">                                            
                                         </Image>
-                                        <Label Text="{Binding Name}" FontSize="Title"></Label>
-                                        <Label Text="{Binding Price, StringFormat='{0:C2}'}" FontSize="Body"></Label>
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Title"></Label>
+                                        <Label Text="{Binding Price, StringFormat='Price: {0:C2}'}" FontSize="Body"></Label>
+                                        <Label Text="{Binding Stock, StringFormat='Stock: {0:N2}'}" FontSize="Body"></Label>
                                     </StackLayout>
                                 </Frame>
                             </ViewCell.View>
@@ -34,7 +39,8 @@
             
             <!--<ListView
             	HasUnevenRows="True"
-            	ItemsSource="{Binding Products}">
+            	ItemsSource="{Binding Products}"
+                IsRefreshing="{Binding IsRefreshing}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -61,7 +67,8 @@
                                     	Text="{Binding Price, StringFormat='{0:C2}'}"
                                     	TextColor="Black">
                                     </Label>
-                                </StackLayout>
+                                    <Label Text="{Binding Stock, StringFormat='Stock: {0:N2}'}" FontSize="Body"></Label>
+                                 </StackLayout>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>

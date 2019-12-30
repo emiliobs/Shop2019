@@ -11,11 +11,12 @@ namespace Shop.UIForms.ViewModels
     {
         private ApiService apiService;
         private ObservableCollection<Product> products;
+        private bool isRefreshing;
 
         public ObservableCollection<Product> Products
         {
             get => products;
-            set 
+            set
             {
                 if (products != value)
                 {
@@ -26,17 +27,32 @@ namespace Shop.UIForms.ViewModels
 
         }
 
+        public bool IsRefreshing
+        { 
+            get => isRefreshing; 
+            set
+            {
+                if (isRefreshing != value)
+                {
+                    isRefreshing = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public ProductViewModel()
         {
             apiService = new ApiService();
             LoadProducts();
-
-            
         }
 
         private async void LoadProducts()
         {
+            IsRefreshing = true;
+
             var response = await apiService.GetListAsync<Product>("http://192.168.0.10:555/", "/api", "/Products");
+            
+            IsRefreshing = false;
 
             if (!response.IsSuccess)
             {
@@ -46,13 +62,11 @@ namespace Shop.UIForms.ViewModels
             }
 
             var myProducts = (List<Product>)response.Result;
-          
-             Products =  new ObservableCollection<Product>(myProducts.OrderBy(p => p.Name));
-           
 
-              
-            }
-            
+            Products = new ObservableCollection<Product>(myProducts.OrderBy(p => p.Name));
+
         }
+
     }
+}
 
