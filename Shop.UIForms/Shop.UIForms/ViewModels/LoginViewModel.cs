@@ -1,5 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Command;
+using Shop.UIForms.Views;
 using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace Shop.UIForms.ViewModels
 {
@@ -38,8 +40,10 @@ namespace Shop.UIForms.ViewModels
 
             }
 
-            await App.Current.MainPage.DisplayAlert("Ok", "Fuck yeah!!!!", "Accept");
+            //await App.Current.MainPage.DisplayAlert("Ok", "Fuck yeah!!!!", "Accept");
 
+            MainViewModel.GetInstance().Products = new ProductViewModel();
+            await Application.Current.MainPage.Navigation.PushAsync(new ProductsPage());
 
 
         }

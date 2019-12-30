@@ -44,7 +44,7 @@ namespace Shop.Web.Data.Entities
 					return null;
 				}
 				//http://10.0.75.1:555/images/Products/iPhonex.jpg
-				return $"http://10.0.75.1:555{ImageUrl.Substring(1)}";
+				return $"http://192.168.0.10:555{ImageUrl.Substring(1)}";
 			}
 
 	    }
