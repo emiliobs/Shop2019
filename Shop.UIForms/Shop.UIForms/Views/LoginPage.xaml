@@ -9,25 +9,17 @@
              Title="Login!">
     <ContentPage.Content>
         <ScrollView BindingContext="{Binding Login}">
-            <StackLayout Padding="8" Spacing="10">
-                <Label Text="Email"></Label>
-                <Entry 
-                    Text="{Binding Email}" 
-                    Placeholder="Enter Your Email....."
-                    Keyboard="Email"
-                    >                    
-                </Entry>
-                <Label Text="Password"></Label>
-                <Entry Text="{Binding Password}"
-                       IsPassword ="True"
-                       Placeholder="enter your Password.....">
-                </Entry>
-                <Button 
-                    Text="Login!" 
-                    Command="{Binding LoginCommand}"
-                    CornerRadius="40"
-                    BackgroundColor="#2196F3">                    
-                </Button>
+            <StackLayout Margin="5,40,5,20">
+                <Frame CornerRadius="10" Margin="10" HasShadow="True" BorderColor="DarkBlue">
+                    <StackLayout>
+                        <Image Source="images.jpg" WidthRequest="300" HeightRequest="200" Aspect="AspectFit"></Image>
+                        <Label Text="Email"></Label>
+                        <Entry Text="{Binding Email}" Placeholder="Enter Your Email....." Keyboard="Email"></Entry>
+                        <Label Text="Password"></Label>
+                        <Entry Text="{Binding Password}" IsPassword ="True" Placeholder="enter your Password....."></Entry>
+                        <Button Text="Login!" Command="{Binding LoginCommand}" CornerRadius="40" BackgroundColor="#2196F3"></Button>
+                    </StackLayout>
+                </Frame>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

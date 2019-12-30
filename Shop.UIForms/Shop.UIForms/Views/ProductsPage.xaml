@@ -8,10 +8,31 @@
             BindingContext="{Binding Main, Source={StaticResource Key=Locator}}"
              Title="Products">
     <ContentPage.Content>
-        <StackLayout
-        	BindingContext="{Binding Products}"
-        	Padding="5">
-            <ListView
+        <StackLayout BindingContext="{Binding Products}">
+            <ListView ItemsSource="{Binding Products}" HasUnevenRows="True" SeparatorVisibility="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Frame CornerRadius="10" Margin="10" HasShadow="True" BorderColor="DarkBlue">
+                                    <StackLayout>
+                                        <Image 
+                                            Source="{Binding ImageFullPath}" 
+                                            WidthRequest="300" 
+                                            HeightRequest="200"
+                                            Aspect="AspectFit">                                            
+                                        </Image>
+                                        <Label Text="{Binding Name}" FontSize="Title"></Label>
+                                        <Label Text="{Binding Price, StringFormat='{0:C2}'}" FontSize="Body"></Label>
+                                    </StackLayout>
+                                </Frame>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>  
+            </ListView>
+            
+            <!--<ListView
             	HasUnevenRows="True"
             	ItemsSource="{Binding Products}">
                 <ListView.ItemTemplate>
@@ -45,7 +66,7 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
+            </ListView>-->
         </StackLayout>
 
     </ContentPage.Content>
