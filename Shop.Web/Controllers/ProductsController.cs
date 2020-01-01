@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop.Web.Data;
 using Shop.Web.Data.Entities;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Web.Controllers
 {
-     
+
     public class ProductsController : Controller
     {
         private readonly IProductRepository _productRepository;
@@ -47,8 +46,8 @@ namespace Shop.Web.Controllers
             return View(product);
         }
 
-       
-    
+
+
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -74,7 +73,7 @@ namespace Shop.Web.Controllers
                         var file = $"{guid}.jpg";
 
                         path = Path.Combine(Directory.GetCurrentDirectory(),
-                                            "wwwroot\\images\\Products", 
+                                            "wwwroot\\images\\Products",
                                             file);
 
                         using (var stream = new FileStream(path, FileMode.Create))
@@ -88,10 +87,10 @@ namespace Shop.Web.Controllers
 
                     var product = ToProduct(view, path);
 
-                    //TODO: Change for the logged User
-                    product.User = await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
+
+                    product.User = await _userHelper.GetUserBiEmailAsync(User.Identity.Name);
                     await _productRepository.CreateAsync(product);
-                  
+
                 }
                 catch (Exception ex)
                 {
@@ -106,7 +105,7 @@ namespace Shop.Web.Controllers
 
         private Product ToProduct(ProductViewModel view, string path)
         {
-            return  new Product 
+            return new Product
             {
                 Id = view.Id,
                 ImageUrl = path,
@@ -117,11 +116,11 @@ namespace Shop.Web.Controllers
                 Price = view.Price,
                 Stock = view.Stock,
                 User = view.User,
-                
+
             };
         }
 
-       
+
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -142,7 +141,7 @@ namespace Shop.Web.Controllers
 
         private ProductViewModel ToProductViewModel(Product product)
         {
-            return new ProductViewModel 
+            return new ProductViewModel
             {
                 Id = product.Id,
                 IsAvailabe = product.IsAvailabe,
@@ -153,7 +152,7 @@ namespace Shop.Web.Controllers
                 Stock = product.Stock,
                 User = product.User,
                 ImageUrl = product.ImageUrl,
-            }; 
+            };
         }
 
         // POST: Products/Edit/5
@@ -161,7 +160,7 @@ namespace Shop.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,ProductViewModel view)
+        public async Task<IActionResult> Edit(int id, ProductViewModel view)
         {
             if (id != view.Id)
             {
@@ -191,11 +190,9 @@ namespace Shop.Web.Controllers
                         path = $"~/images/Products/{file}";
                     }
 
-
                     var product = ToProduct(view, path);
 
-                    //TODO: Change for the logged User
-                    product.User = await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
+                    product.User = await _userHelper.GetUserBiEmailAsync(User.Identity.Name);
                     await _productRepository.UpdateAsync(product);
                     //await _productRepository.SaveAllAsync();
                 }
@@ -211,12 +208,11 @@ namespace Shop.Web.Controllers
                     }
                 }
 
-               return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
             return View(view);
         }
 
-     
         // GET: Products/Delete/5
         public async Task<IActionResult> DeleteAsync(int? id)
         {
@@ -237,12 +233,12 @@ namespace Shop.Web.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public  async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
             try
             {
-                 var product = await _productRepository.GetByIdAsync(id);
+                var product = await _productRepository.GetByIdAsync(id);
                 await _productRepository.DeleteAsync(product);
 
                 //await _productRepository.SaveAllAsync();

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Shop.Web.Controllers
 {
-    
+
     public class AccountController : Controller
     {
         private readonly IUserHelper _userHelper;
@@ -18,7 +18,7 @@ namespace Shop.Web.Controllers
             _userHelper = userHelper;
         }
 
-        
+
         public IActionResult Register()
         {
             return View();
@@ -32,8 +32,8 @@ namespace Shop.Web.Controllers
                 var user = await _userHelper.GetUserBiEmailAsync(model.Username);
                 if (user == null)
                 {
-                    user = new User 
-                    { 
+                    user = new User
+                    {
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Email = model.Username,
@@ -43,21 +43,21 @@ namespace Shop.Web.Controllers
                     var result = await _userHelper.AddUserAsync(user, model.Password);
                     if (result != IdentityResult.Success)
                     {
-                        ModelState.AddModelError(string.Empty,"The User couldn't be created.");
+                        ModelState.AddModelError(string.Empty, "The User couldn't be created.");
                         return View(model);
                     }
 
                     //Aqui logeo al useario registrado:
-                    var loginResult = await _userHelper.LoginAsync(new LoginViewModel 
+                    var loginResult = await _userHelper.LoginAsync(new LoginViewModel
                     {
-                         Password = model.Password,
-                         RememberMe = false,
-                         UserName = model.Username,
+                        Password = model.Password,
+                        RememberMe = false,
+                        UserName = model.Username,
                     });
 
                     if (loginResult.Succeeded)
                     {
-                        return RedirectToAction("Index","Home");
+                        return RedirectToAction("Index", "Home");
                     }
 
                     ModelState.AddModelError(string.Empty, "The User couldn't be Login.");
@@ -105,7 +105,7 @@ namespace Shop.Web.Controllers
         public async Task<IActionResult> Logout()
         {
             await _userHelper.LogoutAsync();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
