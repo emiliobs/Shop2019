@@ -20,7 +20,6 @@ namespace Shop.Web.Helpers
         }
 
         public async Task<IdentityResult> AddUserAsync(User user, string password) => await _userManger.CreateAsync(user,password);
-      
 
         public async Task<User> GetUserBiEmailAsync(string email) => await _userManger.FindByEmailAsync(email);
 
@@ -32,6 +31,16 @@ namespace Shop.Web.Helpers
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public async Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword)
+        {
+            return await _userManger.ChangePasswordAsync(user, oldPassword, newPassword);
+        }
+
+        public async Task<IdentityResult> UpdateUserAsync(User user)
+        {
+            return await _userManger.UpdateAsync(user);
         }
     }
 }

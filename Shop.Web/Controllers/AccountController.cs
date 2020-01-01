@@ -19,6 +19,8 @@ namespace Shop.Web.Controllers
         }
 
 
+        [HttpGet]
+
         public IActionResult Register()
         {
             return View();
@@ -71,6 +73,8 @@ namespace Shop.Web.Controllers
             return View(model);
         }
 
+        [HttpGet]
+
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -107,5 +111,53 @@ namespace Shop.Web.Controllers
             await _userHelper.LogoutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangeUser()
+        {
+            var user = await _userHelper.GetUserBiEmailAsync(User.Identity.Name);
+            var model = new ChangeUserViewModel();
+            if (user != null)
+            {
+                model.FirstName = user.FirstName;
+                model.LastName = user.LastName;
+
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                //aqui tengo lso usraios con los datos viejos sin actualizar:
+                var user = await _userHelper.GetUserBiEmailAsync(User.Identity.Name);
+                if (user != null)
+                {
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+
+                    //aqui actualizos los datos
+                    var response = await _userHelper.UpdateUserAsync(user);
+                    if (response.Succeeded)
+                    {
+                        ViewBag.UserMessage = "User Updated!";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "User no Fount");
+                }
+            }
+
+            return View(model);
+        }
+
     }
 }
