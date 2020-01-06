@@ -24,6 +24,10 @@ namespace Shop.Web.Data
         {
              await _context.Database.EnsureCreatedAsync();
 
+            await _userHelper.CheckRoleAsync("Admin");
+            await  _userHelper.CheckRoleAsync("User");
+
+            //Add Users
             var user = await _userHelper.GetUserBiEmailAsync("barrera_emilio@hotmail.com");
             if (user == null)
             {
@@ -35,15 +39,23 @@ namespace Shop.Web.Data
                     UserName = "barrera_emilio@hotmail.com",
                     PhoneNumber = "+447907951284",
                 };
+
+                var result = await _userHelper.AddUserAsync(user, "Eabs123.");
+                if (result != IdentityResult.Success)
+                {
+
+                    throw new InvalidOperationException("Could not create the user in Seeder.");
+                }
+
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
 
-            var result = await _userHelper.AddUserAsync(user,"Eabs123.");
-            if (result != IdentityResult.Success)
+            var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");   
+            if (!isInRole)
             {
-
-                throw new InvalidOperationException("Could not create the user in Seeder.");
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
-
+            //Add Products
             if (!_context.Products.Any())
             {
                 AddProduct("iPhone x",user);
@@ -55,6 +67,8 @@ namespace Shop.Web.Data
                 await _context.SaveChangesAsync();
             }
         }
+
+       
 
         private void AddProduct(string product, User user)
         {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Shop.Web.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class IntialMigrationPropducts : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -174,7 +174,7 @@ namespace Shop.Web.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    Price = table.Column<decimal>(nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ImageUrl = table.Column<string>(nullable: true),
                     LastPurchase = table.Column<DateTime>(nullable: true),
                     LastSale = table.Column<DateTime>(nullable: true),

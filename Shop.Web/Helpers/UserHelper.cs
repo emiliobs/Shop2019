@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shop.Web.Data.Entities;
 using Shop.Web.Models;
-using System;
 using System.Threading.Tasks;
 
 namespace Shop.Web.Helpers
@@ -10,11 +9,14 @@ namespace Shop.Web.Helpers
     {
         private readonly UserManager<User> _userManger;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserHelper(UserManager<User> userManger, SignInManager<User> signInManager)
+        public UserHelper(UserManager<User> userManger, SignInManager<User> signInManager,
+                          RoleManager<IdentityRole> roleManager)
         {
             _userManger = userManger;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
         public async Task<IdentityResult> AddUserAsync(User user, string password) => await _userManger.CreateAsync(user, password);
@@ -44,6 +46,28 @@ namespace Shop.Web.Helpers
         public async Task<SignInResult> ValidatePasswordAsync(User user, string password)
         {
             return await _signInManager.CheckPasswordSignInAsync(user, password, false);
+        }
+
+        public async Task CheckRoleAsync(string roleName)
+        {
+            var roleExists = await _roleManager.RoleExistsAsync(roleName);
+            if (!roleExists)
+            {
+                await _roleManager.CreateAsync(new IdentityRole
+                {
+                    Name = roleName,
+                });
+            }
+        }
+
+        public async Task AddUserToRoleAsync(User user, string roleName)
+        {
+            await _userManger.AddToRoleAsync(user, roleName);
+        }
+
+        public async  Task<bool> IsUserInRoleAsync(User user, string roleName)
+        {
+            return await _userManger.IsInRoleAsync(user, roleName);
         }
     }
 }

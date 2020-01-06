@@ -84,7 +84,6 @@ namespace Shop.Web.Controllers
         }
 
         [HttpGet]
-
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)

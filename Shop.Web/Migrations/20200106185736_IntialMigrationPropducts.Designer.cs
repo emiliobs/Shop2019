@@ -10,8 +10,8 @@ using Shop.Web.Data.Entities;
 namespace Shop.Web.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20191227193018_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200106185736_IntialMigrationPropducts")]
+    partial class IntialMigrationPropducts
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
