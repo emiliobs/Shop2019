@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shop.Web.Data;
 using Shop.Web.Data.Entities;
@@ -47,7 +48,7 @@ namespace Shop.Web.Controllers
         }
 
 
-
+        [Authorize]
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -120,7 +121,7 @@ namespace Shop.Web.Controllers
             };
         }
 
-
+        [Authorize]
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -213,6 +214,7 @@ namespace Shop.Web.Controllers
             return View(view);
         }
 
+        [Authorize]
         // GET: Products/Delete/5
         public async Task<IActionResult> DeleteAsync(int? id)
         {

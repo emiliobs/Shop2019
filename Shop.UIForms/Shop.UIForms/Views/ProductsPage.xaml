@@ -9,7 +9,8 @@
              Title="Products">
     <ContentPage.Content>
         <StackLayout BindingContext="{Binding Products}">
-            <ListView ItemsSource="{Binding Products}" 
+            
+            <!--<ListView ItemsSource="{Binding Products}" 
                       HasUnevenRows="True" 
                       SeparatorVisibility="None" 
                       IsRefreshing="{Binding IsRefreshing}"
@@ -35,9 +36,9 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>  
-            </ListView>
+            </ListView>-->
             
-            <!--<ListView
+            <ListView
             	HasUnevenRows="True"
             	ItemsSource="{Binding Products}"
                 IsRefreshing="{Binding IsRefreshing}">
@@ -68,12 +69,14 @@
                                     	TextColor="Black">
                                     </Label>
                                     <Label Text="{Binding Stock, StringFormat='Stock: {0:N2}'}" FontSize="Body"></Label>
+                                    <Label Text="{Binding LastPurchase}" FontSize="Small"></Label>
                                  </StackLayout>
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>-->
+            </ListView>
+            
         </StackLayout>
 
     </ContentPage.Content>

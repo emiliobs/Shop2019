@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Shop.Web.Data.Entities;
 using Shop.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Shop.Web.Helpers
 {
@@ -20,5 +22,6 @@ namespace Shop.Web.Helpers
         Task<IdentityResult> UpdateUserAsync(User  user);
 
         Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
+        Task<SignInResult> ValidatePasswordAsync(User user, string password);
     }
 }
