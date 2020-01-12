@@ -34,13 +34,14 @@ namespace Shop.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
             }
 
             var product = await _productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
+
             }
 
             return View(product);
@@ -126,13 +127,15 @@ namespace Shop.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
+
             }
 
             var product = await _productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
+
             }
             var view = ToProductViewModel(product);
 
@@ -164,7 +167,8 @@ namespace Shop.Web.Controllers
         {
             if (id != view.Id)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
+
             }
 
             if (ModelState.IsValid)
@@ -200,7 +204,8 @@ namespace Shop.Web.Controllers
                 {
                     if (!await _productRepository.ExistAsync(view.Id))
                     {
-                        return NotFound();
+                        return new NotFoundViewResult("ProductNotFound");
+
                     }
                     else
                     {
@@ -220,13 +225,15 @@ namespace Shop.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
+
             }
 
             var product = await _productRepository.GetByIdAsync(id.Value);
             if (product == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("ProductNotFound");
+
             }
 
             return View(product);
@@ -252,6 +259,11 @@ namespace Shop.Web.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult ProductNotFound()
+        {
+            return View();
         }
 
 
