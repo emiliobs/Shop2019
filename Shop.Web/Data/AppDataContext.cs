@@ -16,6 +16,9 @@ namespace Shop.Web.Data.Entities
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails{ get; set; }
+        public DbSet<OrderDetailTemp> OrderDetailTemps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
