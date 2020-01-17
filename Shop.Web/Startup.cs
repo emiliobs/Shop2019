@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Shop.Web.Data;
 using Shop.Web.Data.Entities;
+using Shop.Web.Data.Repository;
 using Shop.Web.Helpers;
 
 namespace Shop.Web
@@ -70,6 +71,7 @@ namespace Shop.Web
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
         }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Shop.Web.Data.Entities;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,23 @@ namespace Shop.Web.Data
         public IQueryable GetAllWithUser()
         {
             return _context.Products.Include(p => p.User);
+        }
+
+        public IEnumerable<SelectListItem> GetComboProducts()
+        {
+            var list = _context.Products.Select(p => new SelectListItem
+            {
+               Text = p.Name,
+               Value = p.Id.ToString(),
+            }).ToList();
+
+            list.Insert(0, new SelectListItem 
+            {
+               Text = "(Select a Product.....)",
+               Value = "0",
+            });
+
+            return list;
         }
     }
 }

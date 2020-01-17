@@ -19,6 +19,18 @@ namespace Shop.Web.Data.Repository
             _userHelper = userHelper;
         }
 
+        public async Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string userName)
+        {
+            var user = await _userHelper.GetUserBiEmailAsync(userName);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return _context.OrderDetailTemps.Include(p => p.Product).Where(u => u.User == user).OrderBy(P => P.Product.Name); 
+        }
+
         public async Task<IQueryable<Order>> GetOrdersAsync(string userName)
         {
             var user = await _userHelper.GetUserBiEmailAsync(userName);
