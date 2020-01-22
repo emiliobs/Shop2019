@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Shop.Web.Data;
 using Shop.Web.Data.Repository;
+using Shop.Web.ViewModels;
 using System.Threading.Tasks;
 
 namespace Shop.Web.Controllers
@@ -23,6 +24,64 @@ namespace Shop.Web.Controllers
         public async Task<IActionResult> Create() => View(await _orderRepository.GetDetailTempsAsync(User.Identity.Name));
 
 
+        [HttpGet]
+        public IActionResult AddProduct()
+        {
+            var model = new AddItemViewModel 
+            {
+               Quantity = 1,
+               Products = _productRepository.GetComboProducts()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(AddItemViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _orderRepository.AddItemToOrderAsync(model, User.Identity.Name);
+                return RedirectToAction("Create");
+            }
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> DeleteItem(int? id)
+        {
+            if (id == null)
+            {
+                return NoContent();
+            }
+
+            await _orderRepository.DeleteDetailTempAsync(id.Value);
+            return RedirectToAction("Create");
+        }
+
+        public async Task<IActionResult> Increase(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            await _orderRepository.ModifyOrderDetailTempQuantityAsync(id.Value, 1);
+            return RedirectToAction("Create");
+        }
+
+
+        public async Task<IActionResult> Decrease(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            await _orderRepository.ModifyOrderDetailTempQuantityAsync(id.Value, -1);
+            return RedirectToAction("Create");
+
+        }
 
     }
 }
