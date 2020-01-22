@@ -44,10 +44,14 @@ namespace Shop.Web.Data.Repository
 
             if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
             {
-                return _context.Orders.Include(od => od.Items).ThenInclude(p => p.Product).OrderByDescending(o => o.OrderDate);
+                return _context.Orders
+                    .Include(o => o.User)
+                    .Include(od => od.Items)
+                    .ThenInclude(p => p.Product)
+                    .OrderByDescending(o => o.OrderDate);
             }
 
-            return _context.Orders
+            return _context.Orders                        
                     .Include(od => od.Items)
                     .ThenInclude(p => p.Product)
                     .Where(o => o.User == user)
@@ -119,6 +123,43 @@ namespace Shop.Web.Data.Repository
 
             _context.OrderDetailTemps.Remove(oderDetailTemp);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> ConfirmOrderAsync(string userName)
+        {
+            var user = await _userHelper.GetUserBiEmailAsync(userName);
+            if (user == null)
+            {
+                return false;
+            }
+
+            var orderTemps = await _context.OrderDetailTemps.Include(o => o.Product).Where(o => o.User == user).ToListAsync();
+            if (orderTemps == null || orderTemps.Count == 0)
+            {
+                return false;
+            }
+
+            var details = orderTemps.Select(o => new OrderDetail 
+            {
+              Price = o.Price,
+              Product = o.Product,
+              Quantity = o.Quantity,
+            }).ToList();
+
+
+            var order = new Order 
+            {
+                OrderDate = DateTime.UtcNow,
+               DeliveryDate = DateTime.UtcNow,
+                User = user,
+                Items = details,
+            };
+
+            _context.Orders.Add(order);
+            _context.OrderDetailTemps.RemoveRange(orderTemps);
+           await _context.SaveChangesAsync();
+            
+            return true;
         }
     }
 }

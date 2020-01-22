@@ -83,5 +83,16 @@ namespace Shop.Web.Controllers
 
         }
 
+        public async Task<IActionResult> ConfirmOrder()
+        {
+            var response = await _orderRepository.ConfirmOrderAsync(User.Identity.Name);
+            if (response)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return RedirectToAction("Create");
+        }
+
     }
 }
