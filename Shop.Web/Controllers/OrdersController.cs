@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Shop.Web.Data;
 using Shop.Web.Data.Repository;
+using Shop.Web.Models;
 using Shop.Web.ViewModels;
+using System;
 using System.Threading.Tasks;
 
 namespace Shop.Web.Controllers
@@ -94,5 +96,40 @@ namespace Shop.Web.Controllers
             return RedirectToAction("Create");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Deliver(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var order = await _orderRepository.GetByIdAsync(id.Value);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var model = new DeliverViewModel 
+            {
+               Id = order.Id,
+               DeliveryDate = DateTime.Today,
+            };
+
+            return View(model);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Deliver(DeliverViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _orderRepository.DeliverOrder(model);
+                return RedirectToAction("Index");
+            }
+
+            return View();
+        }
     }
 }

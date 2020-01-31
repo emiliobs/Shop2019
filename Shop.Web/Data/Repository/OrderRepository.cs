@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Web.Data.Entities;
 using Shop.Web.Helpers;
+using Shop.Web.Models;
 using Shop.Web.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -161,5 +162,21 @@ namespace Shop.Web.Data.Repository
             
             return true;
         }
+
+        public async Task DeliverOrder(DeliverViewModel model)
+        {
+            var order = await _context.Orders.FindAsync(model.Id);
+            if (order == null)
+            {
+                return;
+            }
+
+            order.DeliveryDate = model.DeliveryDate;
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<Order> GetOrdersAsync(int id) => await _context.Orders.FindAsync(id);
+      
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Shop.Web.Data.Entities;
+using Shop.Web.Models;
 using Shop.Web.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ namespace Shop.Web.Data.Repository
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
-        Task<IQueryable<Order>> GetOrdersAsync(string userName);
 
         Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string UserName);
 
@@ -20,5 +20,9 @@ namespace Shop.Web.Data.Repository
         Task DeleteDetailTempAsync(int id);
 
         Task<bool> ConfirmOrderAsync(string userName);
+        Task DeliverOrder(DeliverViewModel model);
+        Task<Order> GetOrdersAsync(int id);
+        Task<IQueryable<Order>> GetOrdersAsync(string userName);
+
     }
 }
