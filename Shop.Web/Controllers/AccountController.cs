@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Shop.Web.Data;
 using Shop.Web.Data.Entities;
 using Shop.Web.Helpers;
 using Shop.Web.Models;
@@ -19,13 +20,13 @@ namespace Shop.Web.Controllers
     {
         private readonly IUserHelper _userHelper;
         private readonly IConfiguration _configuration;
+        private readonly ICountryRepository _countryRepository;
 
-
-
-        public AccountController(IUserHelper userHelper, IConfiguration configuration)
+        public AccountController(IUserHelper userHelper, IConfiguration configuration, ICountryRepository countryRepository)
         {
             _userHelper = userHelper;
             _configuration = configuration;
+            _countryRepository = countryRepository;
         }
 
 
@@ -33,7 +34,13 @@ namespace Shop.Web.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            var model = new RegisterNewUserViewModel 
+            {
+               Countries = _countryRepository.GetComboCountries(),
+               Cities = _countryRepository.GetComboCities(0),
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -44,12 +51,18 @@ namespace Shop.Web.Controllers
                 var user = await _userHelper.GetUserBiEmailAsync(model.Username);
                 if (user == null)
                 {
+                    var city = await _countryRepository.GetCityAsync(model.CityId);
+
                     user = new User
                     {
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Email = model.Username,
                         UserName = model.Username,
+                        Address = model.Address,
+                        PhoneNumber = model.PhoneNumber,
+                        CityId = model.CityId,
+                        City = city,
                     };
 
                     var result = await _userHelper.AddUserAsync(user, model.Password);

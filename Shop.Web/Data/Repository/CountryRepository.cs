@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Shop.Web.Data.Entities;
 using Shop.Web.Models;
 using System;
@@ -69,6 +70,52 @@ namespace Shop.Web.Data
         public async Task<City> GetCityAsync(int id)
         {
             return await _context.Cities.FindAsync(id);
+        }
+
+        public IEnumerable<SelectListItem> GetComboCountries()
+        {
+            var list = _context.Countries.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString(),
+            }).OrderBy(l => l.Text).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a Country.....)",
+                Value = "0",
+            });
+
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> GetComboCities(int conuntryId)
+        {
+            var country = _context.Countries.Find(conuntryId);
+            var list = new List<SelectListItem>();
+            if (country != null)
+            {
+                list = country.Cities.Select(c => new SelectListItem 
+                {
+                   Text = c.Name,
+                   Value = c.Id.ToString()
+                }).OrderBy(l => l.Text).ToList();
+            }
+
+            list.Insert(0, new SelectListItem 
+            {
+                Text = "(Select a City.....)",
+                Value = "0",
+            });
+
+           
+
+            return list;
+        }
+
+        public async Task<Country> GetCountryAsync(City city)
+        {
+            return await _context.Countries.Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
         }
     }
 }

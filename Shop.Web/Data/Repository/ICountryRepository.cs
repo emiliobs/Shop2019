@@ -1,4 +1,5 @@
-﻿using Shop.Web.Data.Entities;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Shop.Web.Data.Entities;
 using Shop.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,12 @@ namespace Shop.Web.Data
 		Task<int> UpdateCityAsync(City city);
 
 		Task<int> DeleteCityAsync(City city);
+		IEnumerable<SelectListItem> GetComboCountries();
+
+		IEnumerable<SelectListItem> GetComboCities(int conuntryId);
+
+		Task<Country> GetCountryAsync(City city);
+
 
 	}
 }
