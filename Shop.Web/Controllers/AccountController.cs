@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Shop.Web.Controllers
@@ -34,13 +35,14 @@ namespace Shop.Web.Controllers
 
         public IActionResult Register()
         {
-            var model = new RegisterNewUserViewModel 
+            var model = new RegisterNewUserViewModel
             {
-               Countries = _countryRepository.GetComboCountries(),
-               Cities = _countryRepository.GetComboCities(0),
+                Countries = _countryRepository.GetComboCountries(),
+                Cities = _countryRepository.GetComboCities(),
             };
 
-            return View(model);
+            return this.View(model);
+
         }
 
         [HttpPost]
@@ -137,48 +139,71 @@ namespace Shop.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangeUser()
         {
-            var user = await _userHelper.GetUserBiEmailAsync(User.Identity.Name);
+            var user = await _userHelper.GetUserBiEmailAsync(this.User.Identity.Name);
             var model = new ChangeUserViewModel();
+
             if (user != null)
             {
                 model.FirstName = user.FirstName;
                 model.LastName = user.LastName;
+                model.Address = user.Address;
+                model.PhoneNumber = user.PhoneNumber;
 
+                var city = await _countryRepository.GetCityAsync(user.CityId);
+                if (city != null)
+                {
+                    var country = await _countryRepository.GetCountryAsync(city);
+                    if (country != null)
+                    {
+                        model.CountryId = country.Id;
+                        model.Cities = _countryRepository.GetComboCities();
+                        model.Countries = _countryRepository.GetComboCountries();
+                        model.CityId = user.CityId;
+                    }
+                }
             }
 
-            return View(model);
+            model.Cities = _countryRepository.GetComboCities();
+            model.Countries = _countryRepository.GetComboCountries();
+            return this.View(model);
+
         }
 
         [HttpPost]
         public async Task<IActionResult> ChangeUser(ChangeUserViewModel model)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
-                //aqui tengo lso usraios con los datos viejos sin actualizar:
-                var user = await _userHelper.GetUserBiEmailAsync(User.Identity.Name);
+                var user = await _userHelper.GetUserBiEmailAsync(this.User.Identity.Name);
                 if (user != null)
                 {
+                    var city = await _countryRepository.GetCityAsync(model.CityId);
+
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
+                    user.Address = model.Address;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.CityId = model.CityId;
+                    user.City = city;
 
-                    //aqui actualizos los datos
-                    var response = await _userHelper.UpdateUserAsync(user);
-                    if (response.Succeeded)
+                    var respose = await _userHelper.UpdateUserAsync(user);
+                    if (respose.Succeeded)
                     {
-                        ViewBag.UserMessage = "User Updated!";
+                        this.ViewBag.UserMessage = "User updated!";
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, response.Errors.FirstOrDefault().Description);
+                        this.ModelState.AddModelError(string.Empty, respose.Errors.FirstOrDefault().Description);
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "User no Fount");
+                    this.ModelState.AddModelError(string.Empty, "User no found.");
                 }
             }
 
-            return View(model);
+            return this.View(model);
+
         }
 
         [HttpGet]
@@ -263,6 +288,14 @@ namespace Shop.Web.Controllers
         {
             return View();
         }
+
+       
+        //public async Task<JsonResult> GetCitiesAsync()
+        //{
+        //    var country = await  _countryRepository.GetCountryWithCitiesAsync(1); 
+        //    return Json(country.Cities.OrderBy(c => c.Name));
+        //}
+
 
     }
 }

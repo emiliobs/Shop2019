@@ -23,6 +23,7 @@ namespace Shop.Web.Data
 		Task<int> DeleteCityAsync(City city);
 		IEnumerable<SelectListItem> GetComboCountries();
 
+		IEnumerable<SelectListItem> GetComboCities();
 		IEnumerable<SelectListItem> GetComboCities(int conuntryId);
 
 		Task<Country> GetCountryAsync(City city);

@@ -48,11 +48,18 @@ namespace Shop.Web.Data
         {
             return _context.Countries.Include(c => c.Cities).OrderBy(c => c.Name);
         }
-      
+
         public async Task<Country> GetCountryWithCitiesAsync(int id)
         {
-            return await _context.Countries.Include(c => c.Cities).Where(c => c.Id == id).FirstOrDefaultAsync(); 
+            return await _context.Countries
+                .Include(c => c.Cities)
+                .Where(c => c.Id == id)
+                .FirstOrDefaultAsync();
         }
+        //public async Task<Country> GetCountryWithCitiesAsync(int id)
+        //{
+        //    return await _context.Countries.Include(c => c.Cities).Where(c => c.Id == id).FirstOrDefaultAsync(); 
+        //}
 
         public async Task<int> UpdateCityAsync(City city)
         {
@@ -77,13 +84,30 @@ namespace Shop.Web.Data
             var list = _context.Countries.Select(c => new SelectListItem
             {
                 Text = c.Name,
-                Value = c.Id.ToString(),
+                Value = c.Id.ToString()
             }).OrderBy(l => l.Text).ToList();
 
             list.Insert(0, new SelectListItem
             {
-                Text = "(Select a Country.....)",
-                Value = "0",
+                Text = "(Select a country...)",
+                Value = "0"
+            });
+
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> GetComboCities()
+        {
+            var list = _context.Cities.Select(c => new SelectListItem
+            {
+                Text = c.Name,
+                Value = c.Id.ToString()
+            }).OrderBy(l => l.Text).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select a City...)",
+                Value = "0"
             });
 
             return list;
@@ -95,20 +119,18 @@ namespace Shop.Web.Data
             var list = new List<SelectListItem>();
             if (country != null)
             {
-                list = country.Cities.Select(c => new SelectListItem 
+                list = country.Cities.Select(c => new SelectListItem
                 {
-                   Text = c.Name,
-                   Value = c.Id.ToString()
+                    Text = c.Name,
+                    Value = c.Id.ToString()
                 }).OrderBy(l => l.Text).ToList();
             }
 
-            list.Insert(0, new SelectListItem 
+            list.Insert(0, new SelectListItem
             {
-                Text = "(Select a City.....)",
-                Value = "0",
+                Text = "(Select a city...)",
+                Value = "0"
             });
-
-           
 
             return list;
         }
@@ -117,5 +139,6 @@ namespace Shop.Web.Data
         {
             return await _context.Countries.Where(c => c.Cities.Any(ci => ci.Id == city.Id)).FirstOrDefaultAsync();
         }
+
     }
 }
