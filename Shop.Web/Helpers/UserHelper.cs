@@ -85,5 +85,16 @@ namespace Shop.Web.Helpers
             return await _userManger.FindByIdAsync(userId);
         }
 
+        public async Task<string> GeneratePasswordResetTokenAsync(User user)
+        {
+            return await _userManger.GeneratePasswordResetTokenAsync(user);
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string password)
+        {
+            return await _userManger.ResetPasswordAsync(user, token, password);
+        }
+
+
     }
 }
