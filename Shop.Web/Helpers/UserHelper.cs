@@ -69,5 +69,21 @@ namespace Shop.Web.Helpers
         {
             return await _userManger.IsInRoleAsync(user, roleName);
         }
+
+        public async Task<IdentityResult> ConfirmEmailAsync(User user, string token)
+        {
+            return await _userManger.ConfirmEmailAsync(user, token);
+        }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(User user)
+        {
+            return await _userManger.GenerateEmailConfirmationTokenAsync(user);
+        }
+
+        public async Task<User> GetUserByIdAsync(string userId)
+        {
+            return await _userManger.FindByIdAsync(userId);
+        }
+
     }
 }

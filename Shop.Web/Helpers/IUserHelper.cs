@@ -26,5 +26,12 @@ namespace Shop.Web.Helpers
         Task<SignInResult> ValidatePasswordAsync(User user, string password);
         Task AddUserToRoleAsync(User user, string roleNAme);
         Task <bool>IsUserInRoleAsync(User user, string roleName);
+
+        Task<string> GenerateEmailConfirmationTokenAsync(User user);
+
+        Task<IdentityResult> ConfirmEmailAsync(User user, string token);
+
+        Task<User> GetUserByIdAsync(string userId);
+
     }
 }

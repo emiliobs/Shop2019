@@ -70,6 +70,9 @@ namespace Shop.Web.Data
                 }
 
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
+                //aqui genero token y  confirmo al admin para ingresar al siistema:(trampa al sistema)
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
             }
 
             var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");

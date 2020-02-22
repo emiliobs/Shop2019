@@ -22,12 +22,15 @@ namespace Shop.Web.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IConfiguration _configuration;
         private readonly ICountryRepository _countryRepository;
+        private readonly IEmailHelper _emailHelper;
 
-        public AccountController(IUserHelper userHelper, IConfiguration configuration, ICountryRepository countryRepository)
+        public AccountController(IUserHelper userHelper, IConfiguration configuration, 
+                                 ICountryRepository countryRepository, IEmailHelper emailHelper)
         {
             _userHelper = userHelper;
             _configuration = configuration;
             _countryRepository = countryRepository;
+            _emailHelper = emailHelper;
         }
 
 
@@ -48,7 +51,7 @@ namespace Shop.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterNewUserViewModel model)
         {
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 var user = await _userHelper.GetUserBiEmailAsync(model.Username);
                 if (user == null)
@@ -64,38 +67,35 @@ namespace Shop.Web.Controllers
                         Address = model.Address,
                         PhoneNumber = model.PhoneNumber,
                         CityId = model.CityId,
-                        City = city,
+                        City = city
                     };
 
                     var result = await _userHelper.AddUserAsync(user, model.Password);
                     if (result != IdentityResult.Success)
                     {
-                        ModelState.AddModelError(string.Empty, "The User couldn't be created.");
-                        return View(model);
+                        this.ModelState.AddModelError(string.Empty, "The user couldn't be created.");
+                        return this.View(model);
                     }
 
-                    //Aqui logeo al useario registrado:
-                    var loginResult = await _userHelper.LoginAsync(new LoginViewModel
+                    var myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                    var tokenLink = this.Url.Action("ConfirmEmail", "Account", new
                     {
-                        Password = model.Password,
-                        RememberMe = false,
-                        UserName = model.Username,
-                    });
+                        userid = user.Id,
+                        token = myToken
+                    }, protocol: HttpContext.Request.Scheme);
 
-                    if (loginResult.Succeeded)
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-
-                    ModelState.AddModelError(string.Empty, "The User couldn't be Login.");
-                    return View(model);
+                    _emailHelper.SendMail(model.Username, "Email confirmation", $"<h1>Email Confirmation</h1>" +
+                        $"To allow the user, " +
+                        $"plase click in this link:</br></br><a href = '{tokenLink}'>Confirm Email</a>");
+                    this.ViewBag.Message = "The instructions to allow your user has been sent to email.";
+                    return this.View(model);
                 }
 
-                ModelState.AddModelError(string.Empty, "The Username is already registered.");
-
+                this.ModelState.AddModelError(string.Empty, "The username is already registered.");
             }
 
-            return View(model);
+            return this.View(model);
+
         }
 
         [HttpGet]
@@ -289,7 +289,30 @@ namespace Shop.Web.Controllers
             return View();
         }
 
-       
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return this.NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+
+            var result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return this.NotFound();
+            }
+
+            return View();
+        }
+
+
+
         //public async Task<JsonResult> GetCitiesAsync()
         //{
         //    var country = await  _countryRepository.GetCountryWithCitiesAsync(1); 
